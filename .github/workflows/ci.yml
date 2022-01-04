@@ -1,0 +1,16 @@
+name: CI
+on: [push]
+jobs:
+  code-quality:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Install composer dependencies
+        run: composer install --no-interaction --no-ansi --no-progress
+      - name: Run PHPUnit
+        run: XDEBUG_MODE=coverage php74 ./vendor/bin/phpunit;
+      - name: Run PHPStan
+        run: XDEBUG_MODE=off php74 -d memory_limit=4G ./vendor/bin/phpstan analyse src --no-progress;
+      - name: Run phppcs
+        run: XDEBUG_MODE=off php74 -d memory_limit=4G ./vendor/bin/phpcs;
